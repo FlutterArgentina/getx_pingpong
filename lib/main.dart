@@ -6,16 +6,21 @@ import 'app_controller.dart';
 
 void main() {
   runApp(
-    GetMaterialApp(
+    MyApp(),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
       initialRoute: '/home',
       getPages: [
         GetPage(
             name: '/home',
             page: () => PingPong(),
-            binding: BindingsBuilder.put(
-              () => PingPongController(),
-            )),
+            binding: BindingsBuilder.put(() => PingPongController())),
       ],
-    ),
-  );
+    );
+  }
 }

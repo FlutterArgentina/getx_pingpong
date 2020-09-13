@@ -9,6 +9,7 @@ class PingPongController extends GetxController
   var velocity = 4.5;
   var aceleration = .2;
   var direction = 0;
+  double jugadorSepY = 30.0;
   Paleta jugador1;
   Paleta jugador2;
   Pelota pelota;
@@ -22,20 +23,24 @@ class PingPongController extends GetxController
   void onInit() {
     mitad = Get.width / 2;
     super.onInit();
-    final rightContraint = Get.width;
-    jugador1 = Paleta(rightContraint);
-    jugador2 = Paleta(rightContraint);
+    jugador1 = Paleta();
+    jugador2 = Paleta();
     pelota = Pelota();
-
     final ticker = createTicker(
       (_) {
+        pelota.render();
         jugador1.render();
         jugador2.pos.x = jugador1.pos.x;
-        jugador2.pos.y = Get.height - 200;
         jugador2.render();
       },
     );
     ticker.start();
+  }
+
+  @override
+  void onReady() {
+    pelota.vel.set(2, 2);
+    pelota.pos.set(worldW / 2, worldH / 2);
   }
 
   void onTap(TapDownDetails details) {
@@ -57,7 +62,10 @@ class PingPongController extends GetxController
   void updateWorld(BoxConstraints constraints) {
     worldW = constraints.maxWidth;
     worldH = constraints.maxHeight;
-//    jugador1.worldResize();
-//    jugador2.worldResize();
+    jugador1.worldResize();
+    jugador2.worldResize();
+    jugador1.pos.y = jugadorSepY;
+    jugador2.pos.y = worldH - jugador2.height - jugadorSepY;
+    pelota.worldResize();
   }
 }

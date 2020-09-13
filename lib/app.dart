@@ -16,7 +16,7 @@ class PingPong extends GetView<PingPongController> {
       ),
       body: LayoutBuilder(
         builder: (_, constraints) {
-//          controller.updateWorld(constraints);
+          controller.updateWorld(constraints);
           return GestureDetector(
             onTapDown: controller.onTap,
             onTapUp: (_) => controller.onTapUp(),

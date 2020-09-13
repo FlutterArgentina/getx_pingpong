@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinpong/app_controller.dart';
@@ -6,8 +8,9 @@ import 'utils.dart';
 
 class Pelota {
   final _vel = Point(y: 0, x: 0);
-  final _pos = Point(y: 200, x: 100).obs;
-  final controller = Get.find<PingPongController>();
+  final _pos = Point(y: 100, x: 100).obs;
+
+  PingPongController get controller => Get.find<PingPongController>();
 
   Point get pos => _pos.value;
 
@@ -15,24 +18,37 @@ class Pelota {
   Color color = Colors.blue;
   double velocity = 0;
   double aceleration = 0;
+  double radius = 20;
+  Rectangle bounds = Rectangle<double>(0.0, 0.0, 0.0, 0.0);
 
   void render() {
     _pos.value.y += _vel.y;
     _pos.value.x += _vel.x;
+    constrain();
+    _pos.refresh();
+  }
+
+  void constrain() {
+    if (pos.x < bounds.left) {
+      _vel.x *= -1;
+      pos.x = bounds.left;
+    } else if (pos.x > bounds.right) {
+      pos.x = bounds.right;
+      _vel.x *= -1;
+    }
+    if (pos.y < bounds.top) {
+      pos.y = bounds.top;
+      _vel.y *= -1;
+    } else if (pos.y > bounds.bottom) {
+      pos.y = bounds.bottom;
+      _vel.y *= -1;
+    }
   }
 
   void worldResize() {
-    print("pelota World width: ${controller.worldW}");
+    bounds = Rectangle<double>(
+        0, 0, controller.worldW - radius * 2, controller.worldH - radius * 2);
   }
-// if (_pos.value.x >= rightContraint - width) {
-//   _pos.value.x = rightContraint - width;
-//   color = Colors.red;
-// } else if (_pos.value.x <= 0) {
-//   _pos.value.x = 0;
-//   color = Colors.red;
-// } else {
-//   color = Colors.blue;
-// }}
 }
 
 class PelotaWidget extends StatelessWidget {
@@ -45,7 +61,7 @@ class PelotaWidget extends StatelessWidget {
     return Obx(
       () => Positioned(
         top: pelota.pos.y,
-        bottom: pelota.pos.x,
+        left: pelota.pos.x,
         child: Container(
           width: 35.0,
           height: 35.0,

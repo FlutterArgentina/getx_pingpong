@@ -8,23 +8,22 @@ class Paleta {
   var velocity = 4.5;
   var aceleration = .2;
   var direction = 0;
-  var width = 90.0;
+  double width = 120.0;
+  double height = 20.0;
+
   final _pos = Point(y: 40, x: 0).obs;
-  final controller = Get.find<PingPongController>();
+  PingPongController get controller => Get.find<PingPongController>();
 
-  final double rightContraint;
-
-  Paleta(this.rightContraint);
+  Paleta();
 
   Point get pos => _pos.value;
   Color color = Colors.blue;
 
   void render() {
     if (direction != 0) aceleration += .5;
-
     _pos.value.x += (velocity + aceleration) * direction;
-    if (_pos.value.x >= rightContraint - width) {
-      _pos.value.x = rightContraint - width;
+    if (_pos.value.x >= controller.worldW - width) {
+      _pos.value.x = controller.worldW - width;
       color = Colors.red;
     } else if (_pos.value.x <= 0) {
       _pos.value.x = 0;
@@ -45,9 +44,7 @@ class Paleta {
     aceleration = 0;
   }
 
-  void worldResize() {
-    print("World width: ${controller.worldW}");
-  }
+  void worldResize() {}
 }
 
 class PaletaWidget extends StatelessWidget {
@@ -61,7 +58,7 @@ class PaletaWidget extends StatelessWidget {
         left: paleta.pos.x,
         child: Container(
           color: paleta.color,
-          height: 30.0,
+          height: paleta.height,
           width: paleta.width,
         ),
       ),
